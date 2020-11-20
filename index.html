@@ -1,0 +1,246 @@
+<html>
+<head>
+<title>Mr Test</title>
+</head>
+<body>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+</head>
+<body onload="startGame()">
+<script>
+
+var myGamePiece;
+var myObstacles = [];
+var myScore;
+
+function startGame() {
+    myGamePiece = new component(30, 30, "red", 10, 120);
+    myGamePiece.gravity = 0.05;
+    myScore = new component("30px", "Consolas", "black", 280, 40, "text");
+    myGameArea.start();
+}
+
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = 480;
+        this.canvas.height = 270;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frameNo = 0;
+        this.interval = setInterval(updateGameArea, 20);
+        },
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
+
+function component(width, height, color, x, y, type) {
+    this.type = type;
+    this.score = 0;
+    this.width = width;
+    this.height = height;
+    this.speedX = 0;
+    this.speedY = 0;    
+    this.x = x;
+    this.y = y;
+    this.gravity = 0;
+    this.gravitySpeed = 0;
+    this.update = function() {
+        ctx = myGameArea.context;
+        if (this.type == "text") {
+            ctx.font = this.width + " " + this.height;
+            ctx.fillStyle = color;
+            ctx.fillText(this.text, this.x, this.y);
+        } else {
+            ctx.fillStyle = color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+    }
+    this.newPos = function() {
+        this.gravitySpeed += this.gravity;
+        this.x += this.speedX;
+        this.y += this.speedY + this.gravitySpeed;
+        this.hitBottom();
+    }
+    this.hitBottom = function() {
+        var rockbottom = myGameArea.canvas.height - this.height;
+        if (this.y > rockbottom) {
+            this.y = rockbottom;
+            this.gravitySpeed = 0;
+        }
+    }
+    this.crashWith = function(otherobj) {
+        var myleft = this.x;
+        var myright = this.x + (this.width);
+        var mytop = this.y;
+        var mybottom = this.y + (this.height);
+        var otherleft = otherobj.x;
+        var otherright = otherobj.x + (otherobj.width);
+        var othertop = otherobj.y;
+        var otherbottom = otherobj.y + (otherobj.height);
+        var crash = true;
+        if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+            crash = false;
+        }
+        return crash;
+    }
+}
+
+function updateGameArea() {
+    var x, height, gap, minHeight, maxHeight, minGap, maxGap;
+    for (i = 0; i < myObstacles.length; i += 1) {
+        if (myGamePiece.crashWith(myObstacles[i])) {
+            return;
+        } 
+    }
+    myGameArea.clear();
+    myGameArea.frameNo += 1;
+    if (myGameArea.frameNo == 1 || everyinterval(150)) {
+        x = myGameArea.canvas.width;
+        minHeight = 20;
+        maxHeight = 200;
+        height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
+        minGap = 50;
+        maxGap = 200;
+        gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+        myObstacles.push(new component(10, height, "green", x, 0));
+        myObstacles.push(new component(10, x - height - gap, "green", x, height + gap));
+    }
+    for (i = 0; i < myObstacles.length; i += 1) {
+        myObstacles[i].x += -1;
+        myObstacles[i].update();
+    }
+    myScore.text="SCORE: " + myGameArea.frameNo;
+    myScore.update();
+    myGamePiece.newPos();
+    myGamePiece.update();
+}
+
+function everyinterval(n) {
+    if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
+    return false;
+}
+
+function accelerate(n) {
+    myGamePiece.gravity = n;
+}
+</script>
+<br>
+<button onmousedown="accelerate(-0.2)" onmouseup="accelerate(0.05)">ACCELERATE</button>
+<p>Use the ACCELERATE button to stay in the air</p>
+<p>How long can you stay alive?</p>
+click the play button to play the lobby song
+<br>
+<embed src="file:///C:\Users\sanch\Music\Undertale OST - Ruins Extended.mp3">
+This is my fist website take a look at my website now!.
+<br> 
+<br>
+But wait a moment... What the hell is roblox?, Well.. Roblox is an
+online game platform and game creation system that allows users to program games and play games created by other users. Founded
+by David Baszucki and Erik Cassel in 2004 and released in 2006,
+the platform hosts user-created games of multiple genres coded in the 
+programming language Lua. For most of Roblox's history, it was relatively small, both as a platform and a company, due to both co-founder Baszucki's lack of interest in press coverage and it being
+"lost among the crowd" in a large number of platforms released around the same time. Roblox began to grow rapidly in the second half of the 2010s, and this growth has been accentuated by the COVID-19 pandemic.
+Roblox is free-to-play, with in-game purchases available through a virtual currency called "Robux". As of August 2020, Roblox has over 164 million monthly active users, 
+with it being played by over half of all children aged under 16 in the United States. Roblox has received generally positive reviews from critics.
+<br>
+<br>
+The Roblox logo
+Developer(s)	Roblox Corporation
+Publisher(s)	Roblox Corporation
+Director(s)	David Baszucki,
+Erik Cassel
+Engine	Roblox Studio
+Platform(s)	Windows, macOS, iOS, Android, Xbox One
+Release	PC
+September 1, 2006
+iOS
+December 11, 2012
+Android
+July 16, 2014
+Xbox One
+November 20, 2015
+Genre(s)	Game creation system, massively multiplayer online
+Mode(s)	Multi-player, Single-player
+<br>
+<br>
+<br>
+<br>
+<body bgcolor="#000BFF" text="#00CC00" link="#FF0000" vlink="#EE0000">
+<body background="https://i1.wp.com/ohcbrands.com/wp-content/uploads/2018/05/black-background.jpg?ssl=1" text="#00FF00" link="#FF0000" vlink="#EE0000">
+<br>
+<br>
+<a href="https://www.roblox.com">Join roblox today!</a>
+<br>
+<br>
+<marquee>LIMITED EDITION!</marquee> 
+<br>
+<br>
+<a href="https://www.roblox.com/users/556592174/profile">Visit mt profile plz!</a>
+<br>
+<a href="https://www.roblox.com/catalog/5971142657/Clockwork-Sweatshirt">Buy my Clockwork Sweatshirt!
+<br>
+<a href="https://www.roblox.com/catalog/5971010693/Workclock-Sweatshirt">Buy my Workclock Sweatshirt!
+<br>  
+<a href="https://www.roblox.com/catalog/5969010272/Workclock-Pants">Buy my Workclock Pants!
+<br
+<a href="https://www.roblox.com/catalog/5969007244/Clockwork-Pants">Buy my Clockwork Pants!
+<br>
+<br>
+<marquee>LIMITED EDITION!</marquee> 
+<br>
+<br>
+<a href="https://www.roblox.com/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Roblox_logo.svg/799px-Roblox_logo.svg.png"></a> 
+<br> 
+<form action="https://www.roblox.com" method="post">
+<br>
+<br>
+<br>
+<input type="submit" value="Roblox Epicness"> </form>
+<br>
+<a href="https://www.roblox.com/games/5958199234/The-robloxian-city"><img src="C:\Users\sanch\Desktop\tshirts roblox\Ad.png"></a>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+Playing roblox be like:
+<br>
+<img src="https://media.tenor.com/images/c278aeec3f072eddab8ce52171e33226/tenor.gif">
+<br>
+<br>
+<br>
+<br>
+Play my other games!:
+<br>
+<a href="https://www.roblox.com/games/4739318801/Survive-5-jeffs">Survive 5 jeff the killers!
+<br>
+<a href="https://www.roblox.com/games/5847003178/Kitty-Line-Runner">Kitty line runner!
+<br>
+<a href="https://www.roblox.com/games/5951121481/oldblox-sim">Brickbattle in giant robloxia!
+<br>
+<a href="https://www.roblox.com/games/5764514814/Untitled-Game">Brickbattle in giant robloxia night edition!
+<br>
+<a href="https://www.roblox.com/games/5773498955/Try-Your-Stands-In-The-Impossible-Facility">Try your stands in the imposible facility!
+<br>
+<br>
+<img src="https://lh3.googleusercontent.com/proxy/OzuvjrcOD2CfgSMesKnDop4Y3F_gE1rgV-PHMSEd8dx7gqEhBzeFQHqqTg1qkxY49ezo42hOtxFi6I-pPmjRrR2Bkqsn7xc">
+<br>
+<br>
+You are going to love them!(well i dont really know xD)
+<br>
+<br>
+<br>
+<img=src"https://media1.tenor.com/images/9686128c522c408f515edb0a62d73126/tenor.gif">
+<br>
+<br>
+1 bobux:
+<br>
+<img src="https://i.kym-cdn.com/photos/images/original/001/884/876/ef8.gif">
